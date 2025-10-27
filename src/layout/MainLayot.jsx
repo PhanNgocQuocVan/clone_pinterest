@@ -108,11 +108,18 @@ function MainLayot() {
               Cập nhật{" "}
             </Tooltip>
           </div>
-          <div className="h-[48px] w-[48px] flex items-center justify-center cursor-pointer rounded-[16px] hover:bg-[#18181612]">
+          <Link
+            to={"/messages"}
+            onClick={() => setActive("Message")}
+            className={`${
+              active == "Message" ? "bg-[#18181661] hover:bg-[#18181661]" : ""
+            } relative group h-[48px] w-[48px] flex items-center justify-center cursor-pointer rounded-[16px] hover:bg-[#18181612]`}
+          >
+            <MessageCircle />
             <Tooltip className="left-full top-1/2 -translate-y-1/2">
               Tin nhắn{" "}
             </Tooltip>
-          </div>
+          </Link>
         </div>
 
         <div

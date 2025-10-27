@@ -166,3 +166,42 @@ export const sreachAPI = (from, to, sreachValue) => {
     },
   });
 };
+
+export const getConversationAPI = (userId) => {
+  const url = "/rest/v1/chat_conversation_summary";
+  return axiosInstance.get(url, {
+    params: {
+      viewer_id: `eq.${userId}`,
+      order: "last_time.desc",
+      select: `
+        conversation_id,
+        last_message,
+        last_time,
+        partner_id,
+        partner_full_name,
+        partner_avatar
+      `,
+    },
+  });
+};
+
+export const getMessagesAPI = (conversationId) => {
+  const url = "/rest/v1/messages";
+  return axiosInstance.get(url, {
+    params: {
+      conversation_id: `eq.${conversationId}`,
+      select: "id,content,sender_id,created_at",
+      order: "created_at.asc",
+    },
+  });
+};
+
+export const sendAPI = (conversationId, userID, content) => {
+  const url = "/rest/v1/messages";
+  const value = {
+    conversation_id: conversationId,
+    sender_id: userID,
+    content,
+  };
+  return axiosInstance.post(url, value);
+};

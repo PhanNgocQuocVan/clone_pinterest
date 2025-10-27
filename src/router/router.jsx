@@ -10,6 +10,7 @@ import { PinDetailPage } from "../pages/PinDetailPage";
 import ProfilePage from "../pages/ProfilePage";
 import UserDetail from "../pages/UserDetail";
 import SreachPage from "../pages/SreachPage";
+import MessagesPage from "../pages/Messages.page";
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +30,7 @@ export const router = createBrowserRouter([
       { path: "profile", element: <ProfilePage /> },
       { path: "userDetail/:id", element: <UserDetail /> },
       { path: "sreach", element: <SreachPage /> },
+      { path: "messages", element: <MessagesPage /> },
     ],
   },
   {

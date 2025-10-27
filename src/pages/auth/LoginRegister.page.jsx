@@ -8,8 +8,7 @@ function LoginRegisterPage() {
 
   const handleLoginWithGoogle = async () => {
     const base = import.meta.env.VITE_SUPABASE_URL;
-    const redirectTo = import.meta.env.VITE_LOCALHOST;
-    const urlBackend = `${base}/auth/v1/authorize?provider=google&redirect_to=${redirectTo}`;
+    const urlBackend = `${base}/auth/v1/authorize?provider=google`;
 
     // Redirect browser tới Google login
     window.location.href = urlBackend;
@@ -23,11 +22,11 @@ function LoginRegisterPage() {
         </h2>
       </div>
       <div className="h=full flex items-center justify-between ">
-      {isLoginModal ? (
-        <LoginModal handleLoginWithGoogle={handleLoginWithGoogle} />
-      ) : (
-        <SignupModel handleLoginWithGoogle={handleLoginWithGoogle} />
-      )}
+        {isLoginModal ? (
+          <LoginModal handleLoginWithGoogle={handleLoginWithGoogle} />
+        ) : (
+          <SignupModel handleLoginWithGoogle={handleLoginWithGoogle} />
+        )}
       </div>
     </div>
   );
