@@ -7,9 +7,9 @@ import {
 } from "../services/api.services";
 import { PenLine } from "lucide-react";
 import { Link } from "react-router-dom";
-import UpdataUserInfoModal from "../component/UpdataUserInfo.modal";
+import UpdataUserInfoModal from "../component/modal/UpdataUserInfo.modal";
 import defaulAvatar from "../accset/logo/avatar-defaul.png";
-import UpdataPinInfoModal from "../component/UpdataPinInfo.modal";
+import UpdataPinInfoModal from "../component/modal/UpdataPinInfo.modal";
 
 function ProfilePage() {
   const [dataProfile, setDataProfile] = useState();

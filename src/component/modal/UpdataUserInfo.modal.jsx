@@ -1,7 +1,7 @@
 import { ImageUp, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import avatarDefaul from "../accset/logo/avatar-defaul.png";
-import { updataUserProfileAPI, uploaImgAPI } from "../services/api.services";
+import avatarDefaul from "../../accset/logo/avatar-defaul.png";
+import { updataUserProfileAPI, uploaImgAPI } from "../../services/api.services";
 import toast from "react-hot-toast";
 
 function UpdataUserInfoModal({

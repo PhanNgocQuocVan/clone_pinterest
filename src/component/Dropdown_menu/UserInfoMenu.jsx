@@ -23,7 +23,7 @@ function UserInfoMenu({ className }) {
   };
   return (
     <div
-      className={`gap-5 absolute shadow-2xl flex whitespace-nowrap flex-col p-3 bg-white rounded-2xl items-start w-[360px] ${className}`}
+      className={`gap-5 absolute shadow-2xl flex whitespace-nowrap flex-col p-3 bg-white rounded-2xl items-start md:w-[360px] w-[300px] ${className}`}
     >
       <div className="flex flex-col w-full items-start gap-1 cursor-pointer">
         <p className="text-[#72726c] text-[12px] font-[500] p-3">

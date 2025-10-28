@@ -1,13 +1,12 @@
 import { ImageUp, Trash2, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import avatarDefaul from "../accset/logo/avatar-defaul.png";
 import {
   deleteImgBucketAPI,
   deletePinAPI,
   updataPinAPI,
   updataUserProfileAPI,
   uploaImgAPI,
-} from "../services/api.services";
+} from "../../services/api.services";
 import toast from "react-hot-toast";
 
 function UpdataPinInfoModal({ isOpenModalPin, setIsOpenModalPin, pinTarget }) {

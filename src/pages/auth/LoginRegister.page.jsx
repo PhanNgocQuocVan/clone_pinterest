@@ -1,6 +1,6 @@
 import { useState } from "react";
-import LoginModal from "../../component/Login.modal";
-import SignupModel from "../../component/Signup.model";
+import LoginModal from "../../component/modal/Login.modal";
+import SignupModel from "../../component/modal/Signup.model";
 import { useAppContext } from "../../context/appContext";
 
 function LoginRegisterPage() {

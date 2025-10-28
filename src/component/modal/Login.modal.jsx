@@ -1,22 +1,22 @@
 import { Eye, EyeClosed } from "lucide-react";
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { signupAPI } from "../services/api.services";
-import { useAppContext } from "../context/appContext";
-import { useAuthContex } from "../context/AuthContext";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { loginAPI } from "../../services/api.services";
+import { useAppContext } from "../../context/appContext";
+import { useAuthContex } from "../../context/AuthContext";
 import toast, { Toaster } from "react-hot-toast";
 
-function SignupModel({ handleLoginWithGoogle }) {
+function LoginModal({ handleLoginWithGoogle }) {
   const { isLoginModal, setIsLoginModal } = useAppContext();
   const { getUserInfo } = useAuthContex();
   const [toggle, setToggle] = useState(false);
+  const navigate = useNavigate();
   const EmailRef = useRef(null);
   const passwordRef = useRef(null);
-  const navigate = useNavigate();
 
-  const handleSignUp = async () => {
-    const email = EmailRef.current.value;
-    const password = passwordRef.current.value;
+  const handleLogin = async () => {
+    const email = EmailRef.current?.value;
+    const password = passwordRef.current?.value;
 
     const validateEmail = (value) => {
       // regex cơ bản check email
@@ -32,17 +32,20 @@ function SignupModel({ handleLoginWithGoogle }) {
     }
 
     if (email && password) {
-      const res = await signupAPI(email, password);
-      if (res?.access_token) {
-        localStorage.setItem("access_token", res.access_token);
-        localStorage.setItem("refresh_token", res.refresh_token);
+      const res = await loginAPI(email, password);
+
+      if (res.access_token) {
+        const access_token = res.access_token;
+        localStorage.setItem("access_token", access_token);
         await getUserInfo();
-        navigate("/");
-      } else {
+        navigate("/", { replace: true });
+      }
+
+      if (res.error_code && res.msg) {
         toast.error(res.msg);
       }
     } else {
-      toast.error("vui lòng nhập đầy đủ thông tin");
+      toast.error("Vui lòng nhập đầy đủ thông tin");
     }
   };
   return (
@@ -72,7 +75,7 @@ function SignupModel({ handleLoginWithGoogle }) {
             <div className="relative w-full h-[50px] p-[12px] rounded-2xl border border-[#979793]">
               <input
                 onKeyDown={(e) => {
-                  e === "Enter" ? handleSignUp : "";
+                  e.key === "Enter" ? handleLogin() : "";
                 }}
                 ref={passwordRef}
                 className="w-full"
@@ -88,12 +91,14 @@ function SignupModel({ handleLoginWithGoogle }) {
               </div>
             </div>
           </div>
-
+          <Link to="/forgot-password" className="linkColor font-[500]">
+            Quên mật khẩu?
+          </Link>
           <button
-            onClick={handleSignUp}
+            onClick={handleLogin}
             className=" btn-red h-[36px] w-full rounded-xl text-white font-[500] cursor-pointer"
           >
-            Đăng ký
+            Đăng nhập
           </button>
         </div>
         <p>HOẶC</p>
@@ -107,18 +112,18 @@ function SignupModel({ handleLoginWithGoogle }) {
             className="w-5 h-5"
           />
           <span className="text-sm font-medium text-gray-700">
-            Sign in with Google
+            login with Google
           </span>
         </button>
         <p
           onClick={() => setIsLoginModal(!isLoginModal)}
           className="font-[600] linkColor cursor-pointer"
         >
-          Bạn đã là thành viên? Đăng nhập
+          Chưa tham gia Pinterest đăng ký?
         </p>
       </div>
     </div>
   );
 }
 
-export default SignupModel;
+export default LoginModal;

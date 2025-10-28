@@ -205,3 +205,34 @@ export const sendAPI = (conversationId, userID, content) => {
   };
   return axiosInstance.post(url, value);
 };
+
+export const searchUserAPI = (keyword) => {
+  const url = "/rest/v1/profiles";
+  return axiosInstance.get(url, {
+    params: {
+      select: "id,full_name,avatar_url",
+      full_name: `ilike.*${keyword}*`,
+    },
+  });
+};
+
+export const createConversationAPI = () => {
+  const url = "/rest/v1/conversations";
+  return axiosInstance.post(
+    url,
+    {},
+    { headers: { Prefer: "return=representation" } }
+  );
+};
+
+export const conversation_participantsAPI = (
+  conversationid,
+  user_id,
+  partnerId
+) => {
+  const url = "/rest/v1/conversation_participants";
+  return axiosInstance.post(url, [
+    { conversation_id: conversationid, user_id: user_id },
+    { conversation_id: conversationid, user_id: partnerId },
+  ]);
+};
