@@ -10,11 +10,9 @@ import { Link } from "react-router-dom";
 import UpdataUserInfoModal from "../component/modal/UpdataUserInfo.modal";
 import defaulAvatar from "../accset/logo/avatar-defaul.png";
 import UpdataPinInfoModal from "../component/modal/UpdataPinInfo.modal";
+import { useQuery } from "@tanstack/react-query";
 
 function ProfilePage() {
-  const [dataProfile, setDataProfile] = useState();
-  const [upPins, setUpPins] = useState();
-  const [likePins, setLikePins] = useState();
   const [active, setActive] = useState("upMenu");
   const { userID, infoUser } = useAuthContex();
   const upMenuRef = useRef();
@@ -28,7 +26,7 @@ function ProfilePage() {
   const getProfile = async () => {
     const res = await getProfileAPI(userID);
     if (res) {
-      setDataProfile(res[0]);
+      return res[0];
     }
   };
 
@@ -44,38 +42,38 @@ function ProfilePage() {
   };
 
   const getPinsUser = async () => {
-    try {
-      const res = await getPinsUserAPI(userID);
-      setUpPins(res);
-    } catch (error) {
-      console.log(error);
-    }
+    const res = await getPinsUserAPI(userID);
+    return res;
   };
 
   const getUserLikedPins = async () => {
-    try {
-      const res = await getUserLikedPinsAPI(userID);
-      setLikePins(res);
-    } catch (error) {
-      console.log(error);
-    }
+    const res = await getUserLikedPinsAPI(userID);
+    return res;
   };
   useEffect(() => {
     handelChooeMenu();
   }, [active]);
 
-  useEffect(() => {
-    getProfile();
-    getPinsUser();
-    getUserLikedPins();
-  }, []);
+  const dataProfile = useQuery({
+    queryKey: ["Profile"],
+    queryFn: getProfile,
+  });
+  const upPins = useQuery({
+    queryKey: ["upPins"],
+    queryFn: getPinsUser,
+  });
+  const likePins = useQuery({
+    queryKey: ["likePins"],
+    queryFn: getUserLikedPins,
+  });
+
   return (
     <div className="w-full">
       {isOpenModalUser && (
         <UpdataUserInfoModal
           setIsOpenModalUser={setIsOpenModalUser}
           isOpenModalUser={isOpenModalUser}
-          dataProfile={dataProfile}
+          dataProfile={dataProfile.data}
         />
       )}
       {isOpenModalPin && (
@@ -89,12 +87,12 @@ function ProfilePage() {
       <div className="w-full flex flex-col gap-5 items-center justify-center">
         <img
           className="rounded-full size-[180px] object-cover"
-          src={dataProfile?.avatar_url || defaulAvatar}
+          src={dataProfile.data?.avatar_url || defaulAvatar}
           alt=""
         />
         <div className="flex flex-col items-center justify-center">
           <p className="text-[36px] font-[700] relative">
-            {dataProfile?.full_name}
+            {dataProfile.data?.full_name}
             <PenLine
               onClick={() => setIsOpenModalUser(!isOpenModalUser)}
               className="size-5 absolute -right-10 top-[50%] -translate-y-[30%] cursor-pointer"
@@ -139,8 +137,8 @@ function ProfilePage() {
         <div>
           {active == "upMenu" && (
             <div className="2xl:columns-7 xl:columns-5 lg:columns-4 md:columns-3 sm:columns-2 columns-2 gap-4 p-4 ">
-              {upPins &&
-                upPins.map((upPin) => {
+              {upPins.data &&
+                upPins.data.map((upPin) => {
                   return (
                     <div
                       key={upPin.id}
@@ -183,8 +181,8 @@ function ProfilePage() {
           <div>
             {active == "likeMenu" && (
               <div className="2xl:columns-7 xl:columns-5 lg:columns-4 md:columns-3 sm:columns-2 columns-2 gap-4 p-4 ">
-                {likePins &&
-                  likePins.map((likePin) => {
+                {likePins.data &&
+                  likePins.data.map((likePin) => {
                     return (
                       <div
                         key={likePin?.pin.id}

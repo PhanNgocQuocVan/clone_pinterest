@@ -34,7 +34,7 @@ function UserInfoMenu({ className }) {
           className="flex flex-row gap-3 justify-start w-full rounded-2xl hover_nemu p-3"
         >
           <img
-            className="h-[60px] w-[60px] rounded-full "
+            className="h-[60px] w-[60px] rounded-full object-cover "
             src={infoUser?.avatar_url || avatarDefaul}
             alt=""
           />
