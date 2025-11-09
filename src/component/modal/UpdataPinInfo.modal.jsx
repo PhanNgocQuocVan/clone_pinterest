@@ -8,12 +8,13 @@ import {
   uploaImgAPI,
 } from "../../services/api.services";
 import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 function UpdataPinInfoModal({ isOpenModalPin, setIsOpenModalPin, pinTarget }) {
   const descriptionRef = useRef();
   const titleRef = useRef();
   const outSideRef = useRef();
-  console.log(pinTarget);
+  const queryClien = useQueryClient();
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -25,6 +26,28 @@ function UpdataPinInfoModal({ isOpenModalPin, setIsOpenModalPin, pinTarget }) {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const updataMutation = useMutation({
+    mutationFn: ({ pinID, data }) => updataPinAPI(pinID, data),
+    onSuccess: () => {
+      setIsOpenModalPin(false);
+      queryClien.invalidateQueries(["upPins"]);
+      toast.success("Cập nhật thành công");
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => deletePinAPI(id),
+    onSuccess: () => {
+      setIsOpenModalPin(false);
+      toast.success("Xóa thành công");
+      queryClien.invalidateQueries(["upPins"]);
+    },
+  });
+
+  const deteleImgBuket = useMutation({
+    mutationFn: ({ endPoin, nameImg }) => deleteImgBucketAPI(endPoin, nameImg),
+  });
+
   const handelClickUpdata = async () => {
     const description = descriptionRef.current.value;
     const titl = titleRef.current.value;
@@ -33,35 +56,22 @@ function UpdataPinInfoModal({ isOpenModalPin, setIsOpenModalPin, pinTarget }) {
       description: description,
     };
     const pinID = pinTarget.id;
+
     if (pinID && data) {
-      try {
-        await updataPinAPI(pinID, data);
-        toast.success("Lưu thành công ✅");
-      } catch (error) {
-        console.log(error);
-        toast.error("Lưu thất bại");
-      }
+      updataMutation.mutate({ pinID, data });
     }
   };
 
   const handleDelete = async () => {
     if (pinTarget.id) {
+      deleteMutation.mutate(pinTarget.id);
+      const nameImg = parseSupabaseUrl(pinTarget.image_url);
+      if (nameImg) {
+        deteleImgBuket.mutate({ endPoin: "pins", nameImg });
+      }
+
       try {
         await deletePinAPI(pinTarget.id);
-
-        const nameImg = parseSupabaseUrl(pinTarget.image_url);
-
-        if (nameImg) {
-          try {
-            const res = await deleteImgBucketAPI("pins", nameImg);
-            if (res) {
-              toast.success("Đã xóa ảnh");
-            }
-          } catch (error) {
-            console.log(error);
-            toast.error("Đã có lỗi");
-          }
-        }
       } catch (error) {
         console.log(error);
         toast.error("Đã có lỗi");
@@ -98,14 +108,22 @@ function UpdataPinInfoModal({ isOpenModalPin, setIsOpenModalPin, pinTarget }) {
           </div>
           <div className="flex flex-row gap-3 items-center">
             <div
-              onClick={handleDelete}
-              className="p-3 px-5 bg-color rounded-2xl cursor-pointer"
+              onClick={!deleteMutation.isPending ? handleDelete : undefined}
+              className={`${
+                deleteMutation.isPending ? "opacity-50 cursor-not-allowed " : ""
+              }p-3 px-5 bg-color rounded-2xl cursor-pointer`}
             >
               <Trash2 />
             </div>
             <div
-              onClick={handelClickUpdata}
-              className="p-3 px-5 btn-red rounded-2xl cursor-pointer text-white font-bold"
+              onClick={
+                !updataMutation.isPending ? handelClickUpdata : undefined
+              }
+              className={` ${
+                updataMutation.isPending
+                  ? "opacity-50 cursor-not-allowed pointer-events-none "
+                  : ""
+              } p-3 px-5 btn-red rounded-2xl cursor-pointer text-white font-bold`}
             >
               <p>lưu</p>
             </div>

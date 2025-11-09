@@ -15,8 +15,6 @@ function UpdataUserInfoModal({
   const [fileAvatar, setFileAvatar] = useState();
   const queryClient = useQueryClient();
 
-  const isLoading = uploaImgMutation.isPending || UpdataUserMutation.isPending;
-
   // Mutation cập nhật user
   const UpdataUserMutation = useMutation({
     mutationFn: ({ id, name, avatar }) =>
@@ -39,6 +37,8 @@ function UpdataUserInfoModal({
       toast.error("Upload ảnh thất bại!");
     },
   });
+
+  const isLoading = uploaImgMutation.isPending || UpdataUserMutation.isPending;
 
   const handelUpdataUser = async () => {
     if (!nameRef.current.value) {
@@ -97,6 +97,16 @@ function UpdataUserInfoModal({
       document.body.style.overflow = "auto";
     };
   }, [isOpenModalUser]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setIsOpenModalUser(false);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-gray-400/30 backdrop-blur-[10px] z-1000 flex items-center justify-center">
